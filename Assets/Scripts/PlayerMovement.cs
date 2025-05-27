@@ -68,10 +68,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Pular()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             rb.AddForce(Vector3.up * forcaPulo, ForceMode.Impulse);
-            estaNoChao = false;
             animator.SetTrigger("Pular");
         }
     }
@@ -104,5 +103,32 @@ public class PlayerMovement : MonoBehaviour
     private void Magia()
     {
 
+    }
+    /*
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            estaNoChao = true;
+            animator.SetBool("EstaNoChao", true);
+        }
+    }
+    */
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            estaNoChao = true;
+            animator.SetBool("EstaNoChao", true);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            estaNoChao = false;
+            animator.SetBool("EstaNoChao", false);
+        }
     }
 }
