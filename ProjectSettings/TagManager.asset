@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Floor
+  - Porta
+  - Item
+  - Fatal
+  - Quebra
   layers:
   - Default
   - TransparentFX

@@ -7,8 +7,12 @@ public class PlayerMovement : MonoBehaviour
     private float inputV;
     private Animator animator;
     private bool estaNoChao = true;
+    private float velocidadeAtual;
+    private bool estaVivo = true;
+    private bool contato = false;
     private Vector3 anguloRotacao = new Vector3(0, 90, 0);
-    [SerializeField] private float velocidade;
+    [SerializeField] private float velocidadeAndar;
+    [SerializeField] private float velocidadeCorrer;
     [SerializeField] private float forcaPulo;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,21 +20,28 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        velocidadeAtual = velocidadeAndar;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Andar();
-        Girar();
-        Pular();
+        if(estaVivo)
+        {
+            Andar();
+            Girar();
+            Pular();
+            Correr();
+            //Atacar();
+            Magia();
+        } 
     }
 
     private void Andar()
     {
         inputV = Input.GetAxis("Vertical");
         Vector3 moveDirection = transform.forward * inputV;
-        Vector3 moveForward = rb.position + moveDirection * velocidade * Time.deltaTime;
+        Vector3 moveForward = rb.position + moveDirection * velocidadeAtual * Time.deltaTime;
         rb.MovePosition(moveForward);
 
         if (Input.GetKey(KeyCode.W))
@@ -38,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("Andar", true);
             animator.SetBool("AndarTras", false);
         }
-        else if(Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
             animator.SetBool("AndarTras", true);
             animator.SetBool("Andar", false);
@@ -57,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion.Euler(anguloRotacao * inputH * Time.deltaTime);
         rb.MoveRotation(rb.rotation * deltaRotation);
 
-        if(Input.GetKey(KeyCode.A) ||
+        if (Input.GetKey(KeyCode.A) ||
                     Input.GetKey(KeyCode.D) ||
                         Input.GetKey(KeyCode.LeftArrow) ||
                             Input.GetKey(KeyCode.RightArrow))
@@ -68,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Pular()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && estaNoChao)
+        if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             rb.AddForce(Vector3.up * forcaPulo, ForceMode.Impulse);
             animator.SetTrigger("Pular");
@@ -77,49 +88,78 @@ public class PlayerMovement : MonoBehaviour
 
     private void Correr()
     {
-
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
+        {
+            velocidadeAtual = velocidadeCorrer;
+            animator.SetBool("Correr", true);
+        }
+        else
+        {
+            velocidadeAtual = velocidadeAndar;
+            animator.SetBool("Correr", false);
+        }
     }
 
     private void Morrer()
     {
-
+        animator.SetBool("EstaVivo", false);
+        animator.SetTrigger("Morrer");
+        estaVivo = false;
+        rb.Sleep();
     }
 
     private void Interagir()
     {
-
+        animator.SetTrigger("Interagir");
     }
 
     private void Pegar()
     {
-
+        animator.SetTrigger("Pegar");
     }
 
     private void Atacar()
     {
-
+        //if(Input.GetMouseButtonDown(0))
+        //{
+            animator.SetTrigger("Atacar");
+        //}
     }
 
     private void Magia()
     {
-
-    }
-    /*
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Floor"))
+        if (Input.GetMouseButtonDown(1))
         {
-            estaNoChao = true;
-            animator.SetBool("EstaNoChao", true);
+            animator.SetTrigger("Magia");
         }
     }
-    */
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Quebra"))
+        {
+            Atacar();
+        }
+    }
+
+
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
         {
             estaNoChao = true;
             animator.SetBool("EstaNoChao", true);
+        }
+
+        if (collision.gameObject.CompareTag("Quebra") && Input.GetMouseButtonDown(0))
+        {
+            Atacar();
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Fatal") && estaVivo)
+        {
+            Morrer();
         }
     }
 
@@ -129,6 +169,26 @@ public class PlayerMovement : MonoBehaviour
         {
             estaNoChao = false;
             animator.SetBool("EstaNoChao", false);
+        }
+        if (collision.gameObject.CompareTag("Quebra"))
+        {
+            
+            contato = false;
+        }
+
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.CompareTag("Item") && Input.GetKey(KeyCode.E))
+        {
+            Pegar();
+            Destroy(other.gameObject);
+        }
+        else if(other.CompareTag("Porta") && Input.GetKey(KeyCode.E))
+        {
+            Interagir();
+            other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
         }
     }
 }
