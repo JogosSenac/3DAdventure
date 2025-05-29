@@ -8,8 +8,9 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private bool estaNoChao = true;
     private float velocidadeAtual;
-    private bool estaVivo = true;
     private bool contato = false;
+    private bool morrer = true;
+    private SistemaDeVida sVida;
     private Vector3 anguloRotacao = new Vector3(0, 90, 0);
     [SerializeField] private float velocidadeAndar;
     [SerializeField] private float velocidadeCorrer;
@@ -20,13 +21,14 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        sVida = GetComponent<SistemaDeVida>();
         velocidadeAtual = velocidadeAndar;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(estaVivo)
+        if(sVida.EstaVivo())
         {
             Andar();
             Girar();
@@ -34,7 +36,11 @@ public class PlayerMovement : MonoBehaviour
             Correr();
             //Atacar();
             Magia();
-        } 
+        }
+        else if(!sVida.EstaVivo() && morrer)
+        {
+            Morrer();
+        }
     }
 
     private void Andar()
@@ -102,9 +108,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Morrer()
     {
+        morrer = false;
         animator.SetBool("EstaVivo", false);
         animator.SetTrigger("Morrer");
-        estaVivo = false;
         rb.Sleep();
     }
 
@@ -134,6 +140,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Hit()
+    {
+        animator.SetTrigger("Hit");
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Quebra"))
@@ -141,7 +152,6 @@ public class PlayerMovement : MonoBehaviour
             Atacar();
         }
     }
-
 
     private void OnCollisionStay(Collision collision)
     {
@@ -155,11 +165,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Atacar();
             Destroy(collision.gameObject);
-        }
-
-        if (collision.gameObject.CompareTag("Fatal") && estaVivo)
-        {
-            Morrer();
         }
     }
 
