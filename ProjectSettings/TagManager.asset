@@ -9,6 +9,7 @@ TagManager:
   - Item
   - Fatal
   - Quebra
+  - Magia
   layers:
   - Default
   - TransparentFX
