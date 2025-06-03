@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -12,9 +13,13 @@ public class PlayerMovement : MonoBehaviour
     private bool morrer = true;
     private SistemaDeVida sVida;
     private Vector3 anguloRotacao = new Vector3(0, 90, 0);
+    private bool temChave = false;
+    private int numeroChave = 0;
     [SerializeField] private float velocidadeAndar;
     [SerializeField] private float velocidadeCorrer;
     [SerializeField] private float forcaPulo;
+    [SerializeField] private GameObject magiaPreFab;
+    [SerializeField] private GameObject miraMagia;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -136,8 +141,19 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            StartCoroutine(LancarMagia());
             animator.SetTrigger("Magia");
         }
+    }
+
+    IEnumerator LancarMagia()
+    {
+
+        yield return new WaitForSeconds(0.5f);
+        GameObject magia = Instantiate(magiaPreFab, miraMagia.transform.position, miraMagia.transform.rotation);
+        Rigidbody rbMagia = magia.GetComponent<Rigidbody>();
+        rbMagia.AddForce(miraMagia.transform.forward * 10, ForceMode.Impulse);
+        sVida.UsarMana();
     }
 
     public void Hit()
@@ -192,8 +208,23 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(other.CompareTag("Porta") && Input.GetKey(KeyCode.E))
         {
-            Interagir();
-            other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
+            if(other.gameObject.GetComponent<Porta>().EstaTrancada())
+            {
+                Interagir();
+                other.gameObject.GetComponent<Porta>().AbrirPorta(numeroChave);
+            }
+            else if (!other.gameObject.GetComponent<Porta>().EstaTrancada())
+            {
+                Interagir();
+                other.gameObject.GetComponent<Porta>().AbrirPorta();
+            }    
+        }
+        else if (other.CompareTag("Chave") && Input.GetKey(KeyCode.E))
+        {
+            Pegar();
+            temChave = true;
+            numeroChave = other.gameObject.GetComponent<Chave>().NumeroPorta();
+            other.gameObject.GetComponent<Chave>().PegarChave();
         }
     }
 }

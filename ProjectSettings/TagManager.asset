@@ -10,6 +10,8 @@ TagManager:
   - Fatal
   - Quebra
   - Magia
+  - Interagir
+  - Chave
   layers:
   - Default
   - TransparentFX
