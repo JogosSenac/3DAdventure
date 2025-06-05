@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float forcaPulo;
     [SerializeField] private GameObject magiaPreFab;
     [SerializeField] private GameObject miraMagia;
+    [SerializeField] private int forcaArremeco;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -151,8 +152,9 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         GameObject magia = Instantiate(magiaPreFab, miraMagia.transform.position, miraMagia.transform.rotation);
-        Rigidbody rbMagia = magia.GetComponent<Rigidbody>();
-        rbMagia.AddForce(miraMagia.transform.forward * 10, ForceMode.Impulse);
+        magia.transform.rotation *= Quaternion.Euler(0, -90, 0);
+        Rigidbody rbMagia = magia.GetComponentInChildren<Rigidbody>();
+        rbMagia.AddForce(miraMagia.transform.forward * forcaArremeco, ForceMode.Impulse);
         sVida.UsarMana();
     }
 
