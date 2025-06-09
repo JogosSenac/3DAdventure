@@ -86,6 +86,28 @@ public class SistemaDeVida : MonoBehaviour
         }
     }
 
+    public void CargaMana(int carga)
+    {
+        mana += carga;
+        manaIndicador.value = mana;
+        if (mana > 100)
+        {
+            mana = 100;
+            manaIndicador.value = vida;
+        }
+    }
+
+    public void CargaVida(int carga)
+    {
+        vida += carga;
+        vidaIndicador.value = vida;
+        if (vida > 100)
+        {
+            vida = 100;
+            vidaIndicador.value = vida;
+        }
+    }
+
     public int GetMana()
     {
         return mana;

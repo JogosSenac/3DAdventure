@@ -142,8 +142,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            StartCoroutine(LancarMagia());
-            animator.SetTrigger("Magia");
+            if (sVida.GetMana() > 0)
+            {
+                StartCoroutine(LancarMagia());
+                animator.SetTrigger("Magia");
+            }
         }
     }
 
@@ -152,7 +155,8 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         GameObject magia = Instantiate(magiaPreFab, miraMagia.transform.position, miraMagia.transform.rotation);
-        magia.transform.rotation *= Quaternion.Euler(0, -90, 0);
+        //magia.transform.rotation *= Quaternion.Euler(0, -90, 0); //Machado
+        //magia.transform.rotation *= Quaternion.Euler(90, 0, 180); //Flecha
         Rigidbody rbMagia = magia.GetComponentInChildren<Rigidbody>();
         rbMagia.AddForce(miraMagia.transform.forward * forcaArremeco, ForceMode.Impulse);
         sVida.UsarMana();
@@ -203,14 +207,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.CompareTag("Item") && Input.GetKey(KeyCode.E))
+        if(other.CompareTag("Mana") && Input.GetKey(KeyCode.E))
         {
             Pegar();
+            sVida.CargaMana(50);
             Destroy(other.gameObject);
         }
-        else if(other.CompareTag("Porta") && Input.GetKey(KeyCode.E))
+        else if(other.CompareTag("Vida") && Input.GetKey(KeyCode.E))
         {
-            if(other.gameObject.GetComponent<Porta>().EstaTrancada())
+            Pegar();
+            sVida.CargaVida(50);
+            Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("Porta") && Input.GetKey(KeyCode.E))
+        {
+            if (other.gameObject.GetComponent<Porta>().EstaTrancada())
             {
                 Interagir();
                 other.gameObject.GetComponent<Porta>().AbrirPorta(numeroChave);
@@ -219,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 Interagir();
                 other.gameObject.GetComponent<Porta>().AbrirPorta();
-            }    
+            }
         }
         else if (other.CompareTag("Chave") && Input.GetKey(KeyCode.E))
         {

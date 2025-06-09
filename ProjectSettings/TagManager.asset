@@ -12,6 +12,8 @@ TagManager:
   - Magia
   - Interagir
   - Chave
+  - Mana
+  - Vida
   layers:
   - Default
   - TransparentFX
