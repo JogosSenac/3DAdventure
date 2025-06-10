@@ -10,8 +10,10 @@ public class PlayerMovement : MonoBehaviour
     private bool estaNoChao = true;
     private float velocidadeAtual;
     private bool contato = false;
+    private bool parado = false;
     private bool morrer = true;
     private SistemaDeVida sVida;
+    private SistemaInterativo sInterativo;
     private Vector3 anguloRotacao = new Vector3(0, 90, 0);
     private bool temChave = false;
     private int numeroChave = 0;
@@ -28,13 +30,14 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         sVida = GetComponent<SistemaDeVida>();
+        sInterativo = GetComponent<SistemaInterativo>();
         velocidadeAtual = velocidadeAndar;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(sVida.EstaVivo())
+        if(sVida.EstaVivo() && !parado)
         {
             Andar();
             Girar();
@@ -122,12 +125,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void Interagir()
     {
+        StartCoroutine(Parado());
         animator.SetTrigger("Interagir");
     }
 
     private void Pegar()
     {
+        StartCoroutine(Parado());
         animator.SetTrigger("Pegar");
+    }
+
+    IEnumerator Parado()
+    {
+        parado = true;
+        yield return new WaitForSeconds(1.5f);
+        parado = false;
     }
 
     private void Atacar()
@@ -203,6 +215,33 @@ public class PlayerMovement : MonoBehaviour
             contato = false;
         }
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Mana"))
+        {
+            sInterativo.ExibirInteragir();
+        }
+        else if (other.CompareTag("Vida"))
+        {
+            sInterativo.ExibirInteragir();
+        }
+        else if (other.CompareTag("Porta"))
+        {
+            if (other.gameObject.GetComponent<Porta>().EstaTrancada())
+            {
+                sInterativo.ExibirTrancado();
+            }
+            else if (!other.gameObject.GetComponent<Porta>().EstaTrancada())
+            {
+                sInterativo.ExibirDestrancado();
+            }
+        }
+        else if (other.CompareTag("Chave"))
+        {
+            sInterativo.ExibirInteragir();
+        }
     }
 
     private void OnTriggerStay(Collider other)

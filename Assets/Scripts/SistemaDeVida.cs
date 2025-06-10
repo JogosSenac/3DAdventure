@@ -33,12 +33,6 @@ public class SistemaDeVida : MonoBehaviour
         pMove = GetComponent<PlayerMovement>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public bool EstaVivo()
     {
         return estaVivo;
