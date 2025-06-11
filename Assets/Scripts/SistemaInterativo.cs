@@ -10,12 +10,18 @@ public class SistemaInterativo : MonoBehaviour
     [SerializeField] private Sprite sClose;
     [SerializeField] private Sprite sPlay;
     [SerializeField] private Sprite sLigar;
+    [SerializeField] private Sprite sHit;
     [SerializeField] private Image spriteInterface;
     [SerializeField] private float tempoExibir;
 
     private void Start()
     {
         spriteInterface.enabled = false;
+    }
+
+    public void ExibirHit()
+    {
+        StartCoroutine(ExibirSprite(sHit));
     }
 
     public void ExibirLigar()

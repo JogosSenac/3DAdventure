@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float velocidadeCorrer;
     [SerializeField] private float forcaPulo;
     [SerializeField] private GameObject magiaPreFab;
+    [SerializeField] private GameObject quebraPreFab;
     [SerializeField] private GameObject miraMagia;
     [SerializeField] private int forcaArremeco;
 
@@ -179,26 +180,12 @@ public class PlayerMovement : MonoBehaviour
         animator.SetTrigger("Hit");
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Quebra"))
-        {
-            Atacar();
-        }
-    }
-
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
         {
             estaNoChao = true;
             animator.SetBool("EstaNoChao", true);
-        }
-
-        if (collision.gameObject.CompareTag("Quebra") && Input.GetMouseButtonDown(0))
-        {
-            Atacar();
-            Destroy(collision.gameObject);
         }
     }
 
@@ -209,12 +196,6 @@ public class PlayerMovement : MonoBehaviour
             estaNoChao = false;
             animator.SetBool("EstaNoChao", false);
         }
-        if (collision.gameObject.CompareTag("Quebra"))
-        {
-            
-            contato = false;
-        }
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -241,6 +222,10 @@ public class PlayerMovement : MonoBehaviour
         else if (other.CompareTag("Chave"))
         {
             sInterativo.ExibirInteragir();
+        }
+        else if (other.gameObject.CompareTag("Quebra"))
+        {
+           sInterativo.ExibirHit();
         }
     }
 
@@ -277,6 +262,13 @@ public class PlayerMovement : MonoBehaviour
             temChave = true;
             numeroChave = other.gameObject.GetComponent<Chave>().NumeroPorta();
             other.gameObject.GetComponent<Chave>().PegarChave();
+        }
+
+        if (other.gameObject.CompareTag("Quebra") && Input.GetMouseButtonDown(0))
+        {
+            Atacar();
+            other.gameObject.GetComponent<ObjetoQuebra>().Quebrar(10);
+            Instantiate(quebraPreFab, miraMagia.transform.position, Quaternion.identity);
         }
     }
 }
