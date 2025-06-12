@@ -1,63 +1,61 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SistemaInterativo : MonoBehaviour
 {
-    [SerializeField] private Sprite sTrancado;
-    [SerializeField] private Sprite sAberto;
-    [SerializeField] private Sprite sInteragir;
-    [SerializeField] private Sprite sClose;
-    [SerializeField] private Sprite sPlay;
-    [SerializeField] private Sprite sLigar;
-    [SerializeField] private Sprite sHit;
+    
+    [Header("Objeto do Canvas que o Icone")]
     [SerializeField] private Image spriteInterface;
+    [Header("Objeto do Canvas que o Texto")]
+    [SerializeField] private TextMeshProUGUI textoAviso;
     [SerializeField] private float tempoExibir;
 
     private void Start()
     {
         spriteInterface.enabled = false;
+        textoAviso.enabled = false;
     }
 
-    public void ExibirHit()
+    private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(ExibirSprite(sHit));
+        if (other.gameObject.TryGetComponent<Avisos>(out Avisos a))
+        {
+            StartCoroutine(ExibirAviso(a.SpriteAviso(), a.AvisoTexto(), a.CorAviso()));
+            
+            if(a.AvisoTemporario())
+            {
+                StartCoroutine(TimerAvisoTemporario(other.gameObject));
+            }
+        }
     }
 
-    public void ExibirLigar()
+    IEnumerator TimerAvisoTemporario(GameObject g)
     {
-        StartCoroutine(ExibirSprite(sLigar));
-    }
-    public void ExibirPlay()
-    {
-        StartCoroutine(ExibirSprite(sPlay));
-    }
-
-    public void ExibirFechar()
-    {
-        StartCoroutine(ExibirSprite(sClose));
-    }
-
-    public void ExibirTrancado()
-    {
-        StartCoroutine(ExibirSprite(sTrancado));
-    }
-
-    public void ExibirDestrancado()
-    {
-        StartCoroutine(ExibirSprite(sAberto));
-    }
-
-    public void ExibirInteragir()
-    {
-        StartCoroutine(ExibirSprite(sInteragir));
-    }
-
-    IEnumerator ExibirSprite(Sprite s)
-    {
-        spriteInterface.enabled = true;
-        spriteInterface.sprite = s;
         yield return new WaitForSeconds(tempoExibir);
+        Destroy(g);
+    }
+
+    IEnumerator ExibirAviso(Sprite s, string t, Color c)
+    {
+        //Ativando os objetos
+        spriteInterface.enabled = true;
+        textoAviso.enabled = true;
+
+        //Passando a sprite e definindo a cor do ícone
+        spriteInterface.sprite = s;
+        spriteInterface.color = c;
+
+        //Passando a sprite e definindo a cor do texto
+        textoAviso.text = t;
+        textoAviso.color = c;
+
+        //Exibe o aviso por x segundos
+        yield return new WaitForSeconds(tempoExibir);
+
+        //Desativando os objetos
         spriteInterface.enabled = false;
+        textoAviso.enabled = false;
     }
 }

@@ -44,10 +44,16 @@ public class PlayerMovement : MonoBehaviour
             Girar();
             Pular();
             Correr();
-            //Atacar();
             Magia();
         }
-        else if(!sVida.EstaVivo() && morrer)
+        else if(sVida.EstaVivo() && !parado && contato)
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                Atacar();
+            }  
+        }
+        else if (!sVida.EstaVivo() && morrer)
         {
             Morrer();
         }
@@ -145,10 +151,25 @@ public class PlayerMovement : MonoBehaviour
 
     private void Atacar()
     {
-        //if(Input.GetMouseButtonDown(0))
-        //{
-            animator.SetTrigger("Atacar");
-        //}
+        if(tag == "Quebra")
+        {
+            g.GetComponent<ObjetoQuebra>().Quebrar(10);
+            Instantiate(quebraPreFab, miraMagia.transform.position, Quaternion.identity);
+        }
+        else if (tag == "Inimigo")
+        {
+            g.GetComponent<Inimigo>().LevarDano(10);
+        }
+        else if (tag == "Porta")
+        {
+            g.GetComponent<Porta>().QuebrarPorta();
+        }
+        animator.SetTrigger("Atacar");
+    }
+
+    private GameObject VerificaAtaque(GameObject g)
+    {
+        return g.gameObject;
     }
 
     private void Magia()
@@ -198,37 +219,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Mana"))
-        {
-            sInterativo.ExibirInteragir();
-        }
-        else if (other.CompareTag("Vida"))
-        {
-            sInterativo.ExibirInteragir();
-        }
-        else if (other.CompareTag("Porta"))
-        {
-            if (other.gameObject.GetComponent<Porta>().EstaTrancada())
-            {
-                sInterativo.ExibirTrancado();
-            }
-            else if (!other.gameObject.GetComponent<Porta>().EstaTrancada())
-            {
-                sInterativo.ExibirDestrancado();
-            }
-        }
-        else if (other.CompareTag("Chave"))
-        {
-            sInterativo.ExibirInteragir();
-        }
-        else if (other.gameObject.CompareTag("Quebra"))
-        {
-           sInterativo.ExibirHit();
-        }
-    }
-
     private void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Mana") && Input.GetKey(KeyCode.E))
@@ -264,11 +254,10 @@ public class PlayerMovement : MonoBehaviour
             other.gameObject.GetComponent<Chave>().PegarChave();
         }
 
-        if (other.gameObject.CompareTag("Quebra") && Input.GetMouseButtonDown(0))
+        if (other.gameObject.CompareTag("Quebra"))
         {
-            Atacar();
-            other.gameObject.GetComponent<ObjetoQuebra>().Quebrar(10);
-            Instantiate(quebraPreFab, miraMagia.transform.position, Quaternion.identity);
+            Atacar(other.gameObject, other.gameObject.tag);
         }
     }
+
 }
