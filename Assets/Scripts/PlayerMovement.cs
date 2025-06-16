@@ -38,24 +38,29 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(sVida.EstaVivo() && !parado)
+        if (Input.GetMouseButtonDown(0))
         {
-            Andar();
-            Girar();
-            Pular();
-            Correr();
-            Magia();
+            contato = true;
         }
-        else if(sVida.EstaVivo() && !parado && contato)
+
+        if (sVida.EstaVivo() && !parado)
         {
-            if(Input.GetMouseButtonDown(0))
-            {
-                Atacar();
-            }  
+            Pular();
+            Magia();
         }
         else if (!sVida.EstaVivo() && morrer)
         {
             Morrer();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (sVida.EstaVivo() && !parado)
+        {
+            Andar();
+            Girar();
+            Correr();
         }
     }
 
@@ -149,27 +154,12 @@ public class PlayerMovement : MonoBehaviour
         parado = false;
     }
 
-    private void Atacar()
+    private int Atacar()
     {
-        if(tag == "Quebra")
-        {
-            g.GetComponent<ObjetoQuebra>().Quebrar(10);
-            Instantiate(quebraPreFab, miraMagia.transform.position, Quaternion.identity);
-        }
-        else if (tag == "Inimigo")
-        {
-            g.GetComponent<Inimigo>().LevarDano(10);
-        }
-        else if (tag == "Porta")
-        {
-            g.GetComponent<Porta>().QuebrarPorta();
-        }
         animator.SetTrigger("Atacar");
-    }
-
-    private GameObject VerificaAtaque(GameObject g)
-    {
-        return g.gameObject;
+        Instantiate(quebraPreFab , miraMagia.transform.position, miraMagia.transform.rotation);
+        contato = false; 
+        return 10;
     }
 
     private void Magia()
@@ -256,7 +246,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (other.gameObject.CompareTag("Quebra"))
         {
-            Atacar(other.gameObject, other.gameObject.tag);
+            if(contato)
+            {
+               other.gameObject.GetComponent<ObjetoQuebra>().Quebrar(Atacar()); 
+            }
         }
     }
 
