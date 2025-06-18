@@ -14,8 +14,23 @@ public class SistemaInterativo : MonoBehaviour
 
     private void Start()
     {
-        spriteInterface.enabled = false;
-        textoAviso.enabled = false;
+        ProcuraReferencias();
+    }
+
+    void Update()
+    {
+        ProcuraReferencias();
+    }
+
+    private void ProcuraReferencias()
+    {
+        if (spriteInterface == null || textoAviso == null)
+        {
+            spriteInterface = GameObject.Find("spriteInterface").GetComponent<Image>();
+            spriteInterface.enabled = false;
+            textoAviso = GameObject.Find("textoAviso").GetComponent<TextMeshProUGUI>();
+            textoAviso.enabled = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

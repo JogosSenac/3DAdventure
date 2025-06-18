@@ -13,24 +13,36 @@ public class SistemaDeVida : MonoBehaviour
     private PlayerMovement pMove;
     private bool podeRecarregarMana = true;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
+    {
+        ProcuraReferencias();
+    }
+
+    void Update()
+    {
+        ProcuraReferencias();
+    }
+
+    private void ProcuraReferencias()
     {
         if (manaIndicador == null)
         {
             manaIndicador = GameObject.Find("Mana").GetComponent<Slider>();
-            manaIndicador.maxValue = mana;
+            manaIndicador.maxValue = 100;
             manaIndicador.value = mana;
         }
 
         if (vidaIndicador == null)
         {
             vidaIndicador = GameObject.Find("Vida").GetComponent<Slider>();
-            vidaIndicador.maxValue = vida;
+            vidaIndicador.maxValue = 100;
             vidaIndicador.value = vida;
         }
 
-        pMove = GetComponent<PlayerMovement>();
+        if (pMove == null)
+        {
+            pMove = GetComponent<PlayerMovement>();
+        }
     }
 
     public bool EstaVivo()

@@ -8,12 +8,23 @@ public class SistemaMonetario : MonoBehaviour
 
     void Start()
     {
-        if (textoOuro == null)
-        {
-            textoOuro = GameObject.Find("TextoOuro").GetComponent<TextMeshProUGUI>();
-        }
+        ProcuraReferencias();
 
         AtualizarTextoOuro();
+    }
+
+    void Update()
+    {
+        ProcuraReferencias();
+    }
+
+    private void ProcuraReferencias()
+    {
+        if (textoOuro == null)
+        {
+            textoOuro = GameObject.Find("Ouro").GetComponent<TextMeshProUGUI>();
+            AtualizarTextoOuro();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

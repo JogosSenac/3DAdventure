@@ -8,6 +8,7 @@ public class MudarDeFase : MonoBehaviour
     [SerializeField] private float tempoDeTransicao = 1.0f;
     [SerializeField] private GameObject efeitoFade;
     private Animator animator;
+
     void Start()
     {
        animator = efeitoFade.GetComponent<Animator>();
@@ -20,10 +21,6 @@ public class MudarDeFase : MonoBehaviour
             if (!string.IsNullOrEmpty(nomeDaProximaFase))
             {
                 StartCoroutine(TransicaoParaProximaFase());
-            }
-            else
-            {
-                Debug.LogWarning("Nome da próxima fase não definido!");
             }
         }
     }

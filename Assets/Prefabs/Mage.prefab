@@ -125,6 +125,9 @@ PrefabInstance:
       addedObject: {fileID: 2073797631189367985}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40c68d196932f4243b253080c9af1330, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 9048349918782042156}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40c68d196932f4243b253080c9af1330, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 63702295726688195}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40c68d196932f4243b253080c9af1330, type: 3}
       insertIndex: -1
@@ -215,6 +218,20 @@ CapsuleCollider:
   m_Height: 2.1921744
   m_Direction: 1
   m_Center: {x: 0.010200202, y: 1.095732, z: 0.025501132}
+--- !u!114 &9048349918782042156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4552160078491477521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e63b71035a333e47af15be53d076559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ouro: 10
+  textoOuro: {fileID: 0}
 --- !u!114 &63702295726688195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,8 +264,10 @@ MonoBehaviour:
   velocidadeCorrer: 10
   forcaPulo: 250
   magiaPreFab: {fileID: 0}
+  quebraPreFab: {fileID: 0}
   miraMagia: {fileID: 0}
   forcaArremeco: 0
+  cineCamera: {fileID: 0}
 --- !u!114 &6318120825146351212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,11 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2045c63710a2ca4bb8be7112da8cdf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sTrancado: {fileID: 21300000, guid: 2e0c26d29e032df488c386b6f7b68a07, type: 3}
-  sAberto: {fileID: 21300000, guid: 06fc9c68fa80b244c9528ba1415e06b8, type: 3}
-  sInteragir: {fileID: 21300000, guid: 8e97b743465e5ba48b58da5eaf782e88, type: 3}
-  sClose: {fileID: 21300000, guid: ee36765ac9f6b2c46a3dad8323c32b16, type: 3}
-  sPlay: {fileID: 21300000, guid: af8b2709869b5ff4ba9676e9235d729a, type: 3}
-  sLigar: {fileID: 21300000, guid: 804a6b2ba027861409d34bb7d733d004, type: 3}
   spriteInterface: {fileID: 0}
+  textoAviso: {fileID: 0}
   tempoExibir: 2.5
