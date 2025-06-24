@@ -58,6 +58,14 @@ public class SistemaDeVida : MonoBehaviour
         }
     }
 
+    public void TomarDano(int dano)
+    {
+        if (estaVivo && levarDano)
+        {
+            StartCoroutine(LevarDano(dano));
+        }
+    }
+
     IEnumerator LevarDano(int dano)
     {
         levarDano = false;
