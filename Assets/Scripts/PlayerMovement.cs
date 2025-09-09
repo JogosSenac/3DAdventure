@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         if (sVida.EstaVivo() && !parado)
         {
             Andar();
-            Girar();
+            //Girar();
             Correr();
         }
     }
